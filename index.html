@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script type="text/javascript">
+
+	function Search2(){
+	var request = new XMLHttpRequest();
+
+    request.onreadystatechange = function() {
+        if (request.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+           if (request.status == 200) {
+               alert(request.responseText);
+           }
+           else if (request.status == 400) {
+              alert('There was an error 400');
+           }
+           else {
+               alert('something else other than 200 was returned');
+           }
+        }
+    };
+
+    request.open("GET", "request.php?q=definition", true);
+    request.send();
+	}
+	</script>
+</head>
+<body>
+<!--
+	<h1 style="padding: 2em; background-color: #8A2BE2; color: 	#FFFFFF;font-family: Helvetica;">Web Dictionary</h1>
+	<p1>Lookup the definition of a word(e.g. ajax, html etc)</p1>
+	<br/>
+	<textarea style="resize: none"></textarea>
+-->
+	<button style="background-color: #3A5ABC;padding: 1em;color: #FFFFFF" onclick="Search2()">Search</button>
+
+
+</body>
+
+
+</html>
