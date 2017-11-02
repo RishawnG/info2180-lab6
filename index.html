@@ -1,34 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-	<script type="text/javascript">
+	<script>
 
 	function Search2(searchkey){
 	    if (searchkey.length == 0) { 
         document.getElementById("result").innerHTML = "";
         return;
         } else {
-    	var request = new XMLHttpRequest();
-    
-        request.onreadystatechange = function() {
-            if (request.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
-               if (request.status == 200) {
-                   document.getElementById("result").innerHTML = request.responseText;
-               }
-               else if (request.status == 400) {
-                  alert('There was an error 400');
-               }
-               else {
-                   alert('something else other than 200 was returned');
-               }
-            }
-        };
-    
-        request.open("GET", "request.php?q="+ searchkey, true);
-        request.send();
-    	}
+        	var request = new XMLHttpRequest();
+            request.onreadystatechange = function() {
+                if (request.readyState == XMLHttpRequest.DONE) {   
+                   if (request.status == 200) {
+                       document.getElementById("result").innerHTML = request.responseText;
+                   }
+                }
+        	};
+        	request.open("GET", "request.php?q="+ searchkey, true);
+            request.send();
+	    }
 	}
+	
+	window.onload = function () {
+        var getXmlBtn = document.querySelector('#getXML'); 
+        
+        getXmlBtn.addEventListener('click', function() { 
+        
+            var httpRequest = new XMLHttpRequest();
+            var url = "request.php";
+            httpRequest.onreadystatechange = getXml;
+            httpRequest.open('GET', url);
+            httpRequest.send(); 
+            
+            function getXml() { 
+            
+            if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                if (httpRequest.status === 200) {
+                    var response = httpRequest.responseXML;
+                    console.log(response);
+                    var results = document.querySelector('#result');
+                    var people = response.getElementsByTagName('definition');
+                    var list = document.createElement('ol');
+                    results.appendChild(list);
+                    for (var x = 0; x < people.length; x++) {
+                        var person = document.createElement('li');
+                        var txt = document.createTextNode(people[x].getAttribute('name'));
+                        var ttt = document.createTextNode(people[x].getAttribute('author'));
+                        var text = document.createTextNode(people[x].childNodes[0].nodeValue);
+                        person.appendChild(txt)
+                        person.appendChild(ttt)
+                        person.appendChild(text)
+                        list.appendChild(person);
+                    }
+                } else {
+                    alert('There was a problem with the request.');
+                }
+                }
+            }
+        });
+    }; 
+	
+	
 	</script>
 </head>
 <body>
@@ -39,12 +71,14 @@
 	<h1 style="padding: 2em; background-color: #8A2BE2; color: 	#FFFFFF;font-family: Helvetica;">Web Dictionary</h1>
 	<p1>Lookup the definition of a word(e.g. ajax, html etc)</p1>
 	<br/>
-	<input type="text" id="textSearch">
-	<button style="background-color: #3A5ABC;padding: 1em;color: #FFFFFF" onclick="Search2(textSearch.value)">Search</button>
+    
+    <input type="search" id="textSearch" placeholder="Search">
+    <button style="background-color: #3A5ABC;padding: 1em;color: #FFFFFF" onclick="Search2(textSearch.value)">Search</button>
+	<button id="getXML" style="background-color: #3A5ABC;padding: 1em;color: #FFFFFF" >Get All Definitions</button>
 	<hr/>
     <div id="result"></div>
-
 </body>
 
 
 </html>
+
